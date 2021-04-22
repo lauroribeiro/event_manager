@@ -9,6 +9,8 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_number(phone_number)
+  phone_number = phone_number.gsub(/\D/, '')
+
   return '0000000000' if phone_number.length < 10 || phone_number.length > 11
 
   return phone_number if phone_number.length == 10
