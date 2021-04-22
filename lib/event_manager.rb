@@ -9,13 +9,13 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_number(phone_number)
-  phone_number = phone_number.gsub(/\D/, '')
+  clean_number = phone_number.gsub(/\D/, '')
 
-  return '0000000000' if phone_number.length < 10 || phone_number.length > 11
+  return '0000000000' if clean_number.length < 10 || clean_number.length > 11
 
-  return phone_number if phone_number.length == 10
+  return clean_number if clean_number.length == 10
 
-  phone_number.length == 11 && phone_number[0] == 1 ? phone_number[1..-1] : '0000000000'
+  clean_number.length == 11 && clean_number[0] == 1 ? clean_number[1..-1] : '0000000000'
 end
 
 def legislators_by_zipcode(zipcode)
@@ -56,7 +56,7 @@ contents.each do |row|
   id = row[0]
   name = row[:first_name]
 
-  phone_number = clean_phone_number(row[:phone_number].to_s)
+  phone_number = clean_phone_number(row[:homephone].to_s)
 
   zipcode = clean_zipcode(row[:zipcode].to_s)
 
