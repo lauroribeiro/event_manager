@@ -2,7 +2,7 @@ require 'csv'
 require 'erb'
 require 'google/apis/civicinfo_v2'
 
-API_KEY = 'AIzaSyCz0E43CKdEkslpF5F42L9nmqE35Fjnqmc'.freeze
+API_KEY = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'.freeze
 
 def clean_zipcode(zipcode)
   zipcode.rjust(5, '0')[0..4]
