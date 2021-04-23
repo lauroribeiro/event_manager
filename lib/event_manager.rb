@@ -1,6 +1,8 @@
 require 'csv'
 require 'erb'
 require 'google/apis/civicinfo_v2'
+require 'time'
+require 'date'
 
 API_KEY = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'.freeze
 
@@ -41,6 +43,20 @@ def save_thank_you_letter(id, form_letter)
   end
 end
 
+def peak_registration_hour(contents)
+  reg_dates = []
+  contents.each do |row|
+    reg_dates << row[:regdate]
+  end
+  date_times = reg_dates.map { |date| DateTime.strptime(date, '%m/%d/%y %H:%M') }
+  peak_hours = date_times.reduce(Hash.new(0)) do |hash, date_time|
+    hash[date_time.hour] += 1
+    hash
+  end
+  # date_time = reg_dates.map { |date| date.strftime('%d/%m/%Y') }
+  print peak_hours
+end
+
 puts 'EventManager Initialized!'
 
 template_letter = File.read('form_letter.erb')
@@ -66,3 +82,5 @@ contents.each do |row|
 
   save_thank_you_letter(id, form_letter)
 end
+
+peak_registration_hour(contents)
