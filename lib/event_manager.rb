@@ -44,17 +44,20 @@ def save_thank_you_letter(id, form_letter)
 end
 
 def peak_registration_hour(contents)
-  reg_dates = []
+  hours = []
   contents.each do |row|
-    reg_dates << row[:regdate]
+    hours << row[:regdate]
   end
-  date_times = reg_dates.map { |date| DateTime.strptime(date, '%m/%d/%y %H:%M') }
-  peak_hours = date_times.reduce(Hash.new(0)) do |hash, date_time|
+  hours = hours.map { |date| DateTime.strptime(date, '%m/%d/%y %H:%M') }.each_with_object(Hash.new(0)) do |date_time, hash| 
     hash[date_time.hour] += 1
     hash
   end
-  # date_time = reg_dates.map { |date| date.strftime('%d/%m/%Y') }
-  print peak_hours
+
+  puts "The peak registration hours are #{max_hours(hours)}h"
+end
+
+def max_hours(hours)
+  hours.select { |_k, v| v == hours.values.max }.keys.join('h, ')
 end
 
 def print_info(name, phone_number, zipcode, legislators)
@@ -73,21 +76,21 @@ contents = CSV.open(
   header_converters: :symbol
 )
 
-contents.each do |row|
-  id = row[0]
-  name = row[:first_name]
+# contents.each do |row|
+#   id = row[0]
+#   name = row[:first_name]
 
-  phone_number = clean_phone_number(row[:homephone].to_s)
+#   phone_number = clean_phone_number(row[:homephone].to_s)
 
-  zipcode = clean_zipcode(row[:zipcode].to_s)
+#   zipcode = clean_zipcode(row[:zipcode].to_s)
 
-  legislators = legislators_by_zipcode(zipcode)
+#   # legislators = legislators_by_zipcode(zipcode)
 
-  form_letter = erb_letter.result(binding)
+#   # form_letter = erb_letter.result(binding)
 
-  print_info(name, phone_number, zipcode, legislators)
+#   # print_info(name, phone_number, zipcode, legislators)
 
-  #save_thank_you_letter(id, form_letter)
-end
+#   # save_thank_you_letter(id, form_letter)
+# end
 
-#peak_registration_hour(contents)
+peak_registration_hour(contents)
