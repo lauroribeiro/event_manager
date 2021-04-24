@@ -58,7 +58,8 @@ def peak_registration_hour(contents)
 end
 
 def print_info(name, phone_number, zipcode, legislators)
-  puts "Name: #{name}, phone number: #{phone_number}, zipcode: #{zipcode}, legislators: #{legislators}"
+  legislators_names = legislators.instance_of?(Array) ? legislators.map(&:name).join(', ') : legislators
+  puts "Name: #{name}, phone number: #{phone_number}, zipcode: #{zipcode}, legislators: #{legislators_names}"
 end
 
 puts 'EventManager Initialized!'
@@ -89,4 +90,4 @@ contents.each do |row|
   #save_thank_you_letter(id, form_letter)
 end
 
-peak_registration_hour(contents)
+#peak_registration_hour(contents)
