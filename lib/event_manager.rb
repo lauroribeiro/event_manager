@@ -57,6 +57,10 @@ def peak_registration_hour(contents)
   print peak_hours
 end
 
+def print_info(name, phone_number, zipcode, legislators)
+  puts "Name: #{name}, phone number: #{phone_number}, zipcode: #{zipcode}, legislators: #{legislators}"
+end
+
 puts 'EventManager Initialized!'
 
 template_letter = File.read('form_letter.erb')
@@ -80,7 +84,9 @@ contents.each do |row|
 
   form_letter = erb_letter.result(binding)
 
-  save_thank_you_letter(id, form_letter)
+  print_info(name, phone_number, zipcode, legislators)
+
+  #save_thank_you_letter(id, form_letter)
 end
 
 peak_registration_hour(contents)
