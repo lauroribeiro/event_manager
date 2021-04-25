@@ -44,20 +44,21 @@ def save_thank_you_letter(id, form_letter)
 end
 
 def peak_registration_hour(contents)
-  hours = []
+  date_time = []
   contents.each do |row|
-    hours << row[:regdate]
+    date_time << row[:regdate]
   end
-  hours = hours.map { |date| DateTime.strptime(date, '%m/%d/%y %H:%M') }.each_with_object(Hash.new(0)) do |date_time, hash| 
-    hash[date_time.hour] += 1
+  hours = date_time.map { |reg_date| DateTime.strptime(reg_date, '%m/%d/%y %H:%M') }
+                   .each_with_object(Hash.new(0)) do |reg_date, hash|
+    hash[reg_date.hour] += 1
     hash
   end
 
-  puts "The peak registration hours are #{max_hours(hours)}h"
+  puts "The peak registration hours are #{max_key(hours).join('h, ')}h"
 end
 
-def max_hours(hours)
-  hours.select { |_k, v| v == hours.values.max }.keys.join('h, ')
+def max_key(hash)
+  hash.select { |_k, v| v == hash.values.max }.keys
 end
 
 def print_info(name, phone_number, zipcode, legislators)
