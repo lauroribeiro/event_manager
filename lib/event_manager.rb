@@ -6,6 +6,16 @@ require 'date'
 
 API_KEY = 'AIzaSyClRzDqDh5MsXwnCWi0kOiiBivP6JsSyBw'.freeze
 
+WEEK_DAYS = {
+  0 => 'sunday',
+  1 => 'monday',
+  2 => 'tuesday',
+  3 => 'wednesday',
+  4 => 'thursday',
+  5 => 'friday',
+  6 => 'saturday'
+}.freeze
+
 def clean_zipcode(zipcode)
   zipcode.rjust(5, '0')[0..4]
 end
@@ -57,6 +67,20 @@ def peak_registration_hours(contents)
   puts "The peak registration hours are #{max_key(hours).join('h, ')}h"
 end
 
+def peak_registration_wday(contents)
+  date_time = []
+  contents.each do |row|
+    date_time << row[:regdate]
+  end
+  wdays = date_time.map { |reg_date| DateTime.strptime(reg_date, '%m/%d/%y %H:%M') }
+                   .each_with_object(Hash.new(0)) do |reg_date, hash|
+    hash[WEEK_DAYS[reg_date.to_date.wday]] += 1
+    hash
+  end
+
+  puts "The peak registration day is #{max_key(wdays).join(', ')}"
+end
+
 def max_key(hash)
   hash.select { |_k, v| v == hash.values.max }.keys
 end
@@ -77,21 +101,23 @@ contents = CSV.open(
   header_converters: :symbol
 )
 
-# contents.each do |row|
-#   id = row[0]
-#   name = row[:first_name]
+contents.each do |row|
+  id = row[0]
+  name = row[:first_name]
 
-#   phone_number = clean_phone_number(row[:homephone].to_s)
+  phone_number = clean_phone_number(row[:homephone].to_s)
 
-#   zipcode = clean_zipcode(row[:zipcode].to_s)
+  zipcode = clean_zipcode(row[:zipcode].to_s)
 
-#   # legislators = legislators_by_zipcode(zipcode)
+  legislators = legislators_by_zipcode(zipcode)
 
-#   # form_letter = erb_letter.result(binding)
+  form_letter = erb_letter.result(binding)
 
-#   # print_info(name, phone_number, zipcode, legislators)
+  print_info(name, phone_number, zipcode, legislators)
 
-#   # save_thank_you_letter(id, form_letter)
-# end
+  save_thank_you_letter(id, form_letter)
+end
 
-peak_registration_hours(contents)
+peak_registration_hour(contents)
+contents.rewind
+peak_registration_wday(contents)
