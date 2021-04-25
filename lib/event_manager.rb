@@ -43,7 +43,7 @@ def save_thank_you_letter(id, form_letter)
   end
 end
 
-def peak_registration_hour(contents)
+def peak_registration_hours(contents)
   date_time = []
   contents.each do |row|
     date_time << row[:regdate]
@@ -94,4 +94,4 @@ contents = CSV.open(
 #   # save_thank_you_letter(id, form_letter)
 # end
 
-peak_registration_hour(contents)
+peak_registration_hours(contents)
